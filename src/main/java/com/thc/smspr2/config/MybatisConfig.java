@@ -10,6 +10,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
+// XML 로 설정하여도 되지만, Java 기반으로도 설정 코드를 짤 수 있다.
 @Configuration
 @MapperScan(basePackages={"com.thc.smspr2.mapper"}, sqlSessionFactoryRef="sqlSessionFactory")
 public class MybatisConfig {
