@@ -102,22 +102,22 @@ public class TbuserRestController {
     }
     @Operation(summary = "사용자 로그인",
             description = "사용자 로그인 컨트롤러 <br />"
-                    + "@param TbuserDto.LoginReqDto <br />"
+                    + "@param DefaultDto.UserCredentialsReqDto <br />"
                     + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbuserDto.CreateResDto\\> <br />"
                     + "@exception 필수 파라미터 누락하였을 때 등 <br />"
     )
     @PostMapping("/login")
-    public ResponseEntity<TbuserDto.CreateResDto> login(@Valid @RequestBody TbuserDto.LoginReqDto param){
+    public ResponseEntity<TbuserDto.CreateResDto> login(@Valid @RequestBody DefaultDto.UserCredentialsReqDto param){
         return ResponseEntity.status(HttpStatus.CREATED).body(tbuserService.login(param));
     }
     @Operation(summary = "사용자 가입",
             description = "사용자 가입 컨트롤러 <br />"
-                    + "@param TbuserDto.SignupReqDto <br />"
+                    + "@param DefaultDto.UserCredentialsReqDto <br />"
                     + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbuserDto.CreateResDto\\> <br />"
                     + "@exception 필수 파라미터 누락하였을 때 등 <br />"
     )
     @PostMapping("/signup")
-    public ResponseEntity<TbuserDto.CreateResDto> signup(@Valid @RequestBody TbuserDto.SignupReqDto param){
+    public ResponseEntity<TbuserDto.CreateResDto> signup(@Valid @RequestBody DefaultDto.UserCredentialsReqDto param){
         return ResponseEntity.status(HttpStatus.CREATED).body(tbuserService.signup(param));
     }
 
