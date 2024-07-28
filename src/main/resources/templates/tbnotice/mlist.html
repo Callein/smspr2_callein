@@ -9,58 +9,62 @@
 </head>
 <body>
 
-<script id="list_info_tbpost" type="text/x-handlebars-template">
-    {{#resultData_tbpost}}
+<script id="list_info_tbnotice" type="text/x-handlebars-template">
+    {{#resultData_tbnotice}}
     <tr class="gradeA">
         <td><font class="font_deleted_{{deleted}} chk_deleted_{{id}}">{{deleted}}</font></td>
         <td>{{tbuserNick}}</td>
-        <td><a href="/tbpost/detail/{{id}}">{{title}}</a></td>
+        <td><a href="/tbnotice/detail/{{id}}">{{title}}</a></td>
         <td>{{createdAt}} / {{modifiedAt}}
-        <input type="hidden" class="input_tbpost_created_at" value="{{createdAt}}"/>
-        <input type="hidden" class="input_tbpost_title" value="{{title}}"/>
+        <input type="hidden" class="input_tbnotice_created_at" value="{{createdAt}}"/>
+        <input type="hidden" class="input_tbnotice_cate" value="{{cate}}"/>
+        <input type="hidden" class="input_tbnotice_title" value="{{title}}"/>
         </td>
     </tr>
-    {{/resultData_tbpost}}
+    {{/resultData_tbnotice}}
 </script>
 <script type="text/javascript">
-    var list_info_tbpost = $("#list_info_tbpost").html();
-    var list_info_tbpost_template = Handlebars.compile(list_info_tbpost);
+    var list_info_tbnotice = $("#list_info_tbnotice").html();
+    var list_info_tbnotice_template = Handlebars.compile(list_info_tbnotice);
 </script>
 
 deleted :
-<select id="detail_tbpost_deleted" onchange="listener_search_changed(this);">
+<select id="detail_tbnotice_deleted" onchange="listener_search_changed(this);">
     <option value="" selected="selected">전체</option>
     <option value="N">일반</option>
     <option value="Y">삭제</option>
 </select>
 tbuserId :
-<input id="detail_tbpost_tbuserId" type="text" onchange="listener_search_changed(this);">
+<input id="detail_tbnotice_tbuserId" type="text" onchange="listener_search_changed(this);">
+cate :
+<input id="detail_tbnotice_cate" type="text" />
 title :
-<input id="detail_tbpost_title" type="text" onchange="listener_search_changed(this);">
+<input id="detail_tbnotice_title" type="text" onchange="listener_search_changed(this);">
 
-<button onclick="mlist_tbpost()">list</button>
+<button onclick="mlist_tbnotice()">list</button>
 
 <div>
-    총 글 등록수 : <font class="font_tbpost_listsize">-</font>
+    총 알림 수 : <font class="font_tbnotice_listsize">-</font>
 </div>
 <div>
-    총 페이지 수 : <font class="font_tbpost_pagesize">-</font>
+    총 페이지 수 : <font class="font_tbnotice_pagesize">-</font>
 </div>
 <div>
     orderby :
-    <select id="search_tbpost_orderby" onchange="listener_search_changed(this);">
-        <option value="created_at" selected="selected">입력순</option>
+    <select id="search_tbnotice_orderby" onchange="listener_search_changed(this);">
+        <option value="created_at" selected="selected">시간순</option>
+        <option value="cate">종류순</option>
         <option value="title">제목순</option>
     </select>
     orderway :
-    <select id="search_tbpost_orderway" onchange="listener_search_changed(this);">
+    <select id="search_tbnotice_orderway" onchange="listener_search_changed(this);">
         <option value="desc" selected="selected">역방향</option>
         <option value="asc">정방향</option>
     </select>
     cursor :
-        <input id="search_tbpost_cursor" type="text" value="" />
+        <input id="search_tbnotice_cursor" type="text" value="" />
     perpage :
-    <select id="search_tbpost_perpage" onchange="listener_search_changed(this);">
+    <select id="search_tbnotice_perpage" onchange="listener_search_changed(this);">
         <option value="2" selected="selected">2</option>
         <option value="3">3</option>
         <option value="10">10</option>
@@ -72,67 +76,71 @@ title :
         <thead>
             <tr>
                 <th>삭제여부</th>
-                <th>작성자</th>
+                <th>수신자</th>
+                <th>종류</th>
                 <th>제목</th>
                 <th>일시</th>
             </tr>
         </thead>
-        <tbody id="tbody_tbpost_list">
+        <tbody id="tbody_tbnotice_list">
         </tbody>
     </table>
 </div>
 <script>
     $( document ).ready(function() {
         console.log( "ready!" );
-        mlist_tbpost();
+        mlist_tbnotice();
     });
 </script>
 <script>
     function listener_search_changed(obj){
         let temp_id = $(obj).attr("id");
         let temp_val = $(obj).val();
-        $("#search_tbpost_cursor").val("");
-        $("#tbody_tbpost_list").html("");
+        $("#search_tbnotice_cursor").val("");
+        $("#tbody_tbnotice_list").html("");
         alert(temp_id + " : " + temp_val + "로 다시 검색합니다.");
-        mlist_tbpost();
+        mlist_tbnotice();
     }
-    function mlist_tbpost(){
+    function mlist_tbnotice(){
 
-        let orderby = $("#search_tbpost_orderby").val();
-        let orderway = $("#search_tbpost_orderway").val();
+        let orderby = $("#search_tbnotice_orderby").val();
+        let orderway = $("#search_tbnotice_orderway").val();
 
         let cursor = "";
-        let input_tbpost_data_cursor = null;
+        let input_tbnotice_data_cursor = null;
         if(orderby === "created_at"){
-            input_tbpost_data_cursor = $(".input_tbpost_created_at");
+            input_tbnotice_data_cursor = $(".input_tbnotice_created_at");
+        }else if(orderby === "cate"){
+            input_tbnotice_data_cursor = $(".input_tbnotice_cate");
         } else if(orderby === "title"){
-            input_tbpost_data_cursor = $(".input_tbpost_title");
+            input_tbnotice_data_cursor = $(".input_tbnotice_title");
         }
-        if(input_tbpost_data_cursor != null && input_tbpost_data_cursor.length > 0){
-            cursor = $(input_tbpost_data_cursor[input_tbpost_data_cursor.length - 1]).val();
+        if(input_tbnotice_data_cursor != null && input_tbnotice_data_cursor.length > 0){
+            cursor = $(input_tbnotice_data_cursor[input_tbnotice_data_cursor.length - 1]).val();
         }
 
-        $("#search_tbpost_cursor").val(cursor);
+        $("#search_tbnotice_cursor").val(cursor);
 
         $.ajax({
-            url: "/api/tbpost/mlist",
+            url: "/api/tbnotice/mlist",
             type: "GET",
             contentType : 'application/json; charset=utf-8',
             data: {
-                deleted : $("#detail_tbpost_deleted").val()
+                deleted : $("#detail_tbnotice_deleted").val()
                 , orderby : orderby
                 , orderway : orderway
-                , perpage : $("#search_tbpost_perpage").val()
-                , cursor : $("#search_tbpost_cursor").val()
-                , tbuserId : $("#detail_tbpost_tbuserId").val()
-                , title : $("#detail_tbpost_title").val()
+                , perpage : $("#search_tbnotice_perpage").val()
+                , cursor : $("#search_tbnotice_cursor").val()
+                , tbuserId : $("#detail_tbnotice_tbuserId").val()
+                , cate : $("detail_tbnotice_cate").val()
+                , title : $("#detail_tbnotice_title").val()
             },
             cache: false,
             success: (data, status, xhr)=>{
                 //alert("success!!");
                 //alert(JSON.stringify(data));
                 let a_list = data;
-                $("#tbody_tbpost_list").append(list_info_tbpost_template({"resultData_tbpost":a_list}));
+                $("#tbody_tbnotice_list").append(list_info_tbnotice_template({"resultData_tbnotice":a_list}));
             },
             error: (data, status, xhr)=>{
                 alert("error!!");
