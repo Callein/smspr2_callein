@@ -24,8 +24,8 @@ title :
 content :
 <input id="detail_tbnotice_content" type="text" />
 
-tbuserId :
-<input id="detail_tbnotice_tbuserId" type="text" />
+<!--tbuserId :-->
+<!--<input id="detail_tbnotice_tbuserId" type="text" />-->
 
 tbuserNick : <font class="font_tbnotice_tbuserNick"></font>
 
@@ -76,11 +76,6 @@ tbuserNick : <font class="font_tbnotice_tbuserNick"></font>
                     $("#detail_tbnotice_" + eachKey).val(obj_data[eachKey]);
                     $(".font_tbnotice_" + eachKey).text(obj_data[eachKey]);
                 }
-
-                let a_list = obj_data["tbnoticefiles"];
-                $("#div_create_tbnotice_imgs").append(list_info_tbnoticefile_template({"resultData_tbnoticefile":a_list}));
-
-                mlist_tbnoticecmt();
 /*
                 let download_file = data["content"];
                 download_file = download_file.replace("/uploadfile/", "");
