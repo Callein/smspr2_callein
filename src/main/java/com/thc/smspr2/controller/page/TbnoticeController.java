@@ -12,6 +12,8 @@ public class TbnoticeController {
     public String page(@PathVariable String page){
         return "tbnotice/" + page;
     }
+
+
     @GetMapping("/{page}/{id}")
     public String page(@PathVariable String page, @PathVariable String id){
         return "tbnotice/" + page;
