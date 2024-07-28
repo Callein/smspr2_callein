@@ -8,25 +8,6 @@ import lombok.experimental.SuperBuilder;
 
 public class DefaultDto {
 
-    @SuperBuilder
-    @Schema
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class UserCredentialsReqDto {
-        @Schema(description = "username", example="")
-        @NotNull
-        @NotEmpty
-        @Size(max=400)
-        private String username;
-        @Schema(description = "password", example="")
-        @NotNull
-        @NotEmpty
-        @Size(max=100)
-        private String password;
-    }
-
     @Builder
     @Schema
     @Getter
