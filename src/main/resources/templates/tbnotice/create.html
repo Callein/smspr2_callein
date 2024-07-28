@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>test</title>
+    <title>notice_test</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
@@ -24,6 +24,7 @@ test!!
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify({
                 title : $("#input_title").val()
+                ,cate : $("#input_cate").val()
                 ,content : $("#input_content").val()
             }),
             cache: false,
