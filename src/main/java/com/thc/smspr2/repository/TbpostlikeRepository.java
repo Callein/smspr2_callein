@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TbpostlikeRepository extends JpaRepository<Tbpostlike, String> {
     Tbpostlike findByTbpostIdAndTbuserId(String tbpostId, String tbuserId);
+    boolean existsByTbpostIdAndTbuserId(String tbpostId, String tbuserId);
 }
