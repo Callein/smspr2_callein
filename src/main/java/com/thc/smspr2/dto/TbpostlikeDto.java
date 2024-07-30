@@ -40,6 +40,7 @@ public class TbpostlikeDto {
     @NoArgsConstructor
     public static class CreateResDto{
         private String id;
+        private boolean liked;
     }
     @SuperBuilder
     @Schema
@@ -112,4 +113,10 @@ public class TbpostlikeDto {
         private String tbuserId;
     }
 
+    @Getter
+    @Builder
+    public static class DeleteReqDto {
+        private String tbpostId;
+        private String tbuserId;
+    }
 }
