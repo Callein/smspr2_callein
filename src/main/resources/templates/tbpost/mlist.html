@@ -21,6 +21,11 @@
         <input type="hidden" class="input_tbpost_created_at" value="{{createdAt}}"/>
         <input type="hidden" class="input_tbpost_title" value="{{title}}"/>
         </td>
+        <td>
+            <button class="btn-like" data-postid="{{id}}" data-userid="{{tbuserId}}" data-liked="{{liked}}">
+                {{#if liked}}Unlike{{else}}Like{{/if}}
+            </button>
+        </td>
     </tr>
     {{/resultData_tbpost}}
 </script>
@@ -146,6 +151,33 @@ title :
             }
         });
     }
+    $(document).on('click', '.btn-like', function() {
+        let postId = $(this).data('postid');
+        let userId = $(this).data('userid');
+        let liked = $(this).data('liked');
+
+        $.ajax({
+            url: "/api/tbpostlike/toggle",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ tbpostId: postId, tbuserId: userId }),
+            success: function(response) {
+                if (liked) {
+                    alert("Unliked!");
+                    $(this).data('liked', false);
+                    $(this).text("Like");
+                } else {
+                    alert("Liked!");
+                    $(this).data('liked', true);
+                    $(this).text("Unlike");
+                }
+            }.bind(this),
+            error: function(xhr, status, error) {
+                alert("Error toggling like: " + xhr.responseText);
+            }
+        });
+    });
+
 </script>
 
 </body>
