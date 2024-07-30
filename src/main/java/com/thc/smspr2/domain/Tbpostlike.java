@@ -14,13 +14,12 @@ import lombok.Setter;
         }
         ,uniqueConstraints = {
         @UniqueConstraint(
-        name = "UQ_tbpostlike_tbpost_id_tbuser_id"
-        ,columnNames = {"tbpostId", "tbuserId"}
+                name = "UQ_tbpostlike_tbpost_id_tbuser_id"
+                ,columnNames = {"tbpostId", "tbuserId"}
         )}
 )
 @Entity
 public class Tbpostlike extends AuditingFields {
-
     @Setter @Column(nullable = false) private String tbpostId;
     @Setter @Column(nullable = false) private String tbuserId;
 
