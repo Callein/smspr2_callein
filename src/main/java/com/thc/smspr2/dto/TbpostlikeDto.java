@@ -115,7 +115,7 @@ public class TbpostlikeDto {
 
     @Getter
     @Builder
-    public static class DeleteReqDto {
+    public static class DeleteServDto {
         private String tbpostId;
         private String tbuserId;
     }
