@@ -47,7 +47,7 @@ title :
 tbuserId :
 <input id="detail_tbpost_tbuserId" type="text" />
 
-tbuserNick : <font class="font_tbpost_tbuserNick"></font>
+tbuserNick : <font id="font_tbpost_tbuserNick"></font>
 content :
 <input id="detail_tbpost_content" type="text" />
 
@@ -67,7 +67,10 @@ content :
 </div>
 
 좋아요 :
-<button onclick="create_tbpostlike()">like</button>
+
+<button class="btn-like" onclick="toggle_tbpostlike()">
+    {{#if liked}}Unlike{{else}}Like{{/if}}
+</button>
 
 댓글 :
 <input id="create_tbpostcmt_content" type="text" />
@@ -277,6 +280,12 @@ content :
                 $("#div_create_tbpost_imgs").append(list_info_tbpostfile_template({"resultData_tbpostfile":a_list}));
 
                 mlist_tbpostcmt();
+
+                if (obj_data.liked) {
+                    $(".btn-like").text("Unlike").data("liked", true);
+                } else {
+                    $(".btn-like").text("Like").data("liked", false);
+                }
 /*
                 let download_file = data["content"];
                 download_file = download_file.replace("/uploadfile/", "");
@@ -340,7 +349,9 @@ content :
                 alert(JSON.stringify(data));
             }
         });
-    }function toggle_tbpostcmt(){
+    }
+
+    function toggle_tbpostlike(){
 
         let tbuserId = localStorage.getItem("myTbuserId");
         if (tbuserId == null || tbuserId === "") {
@@ -349,7 +360,7 @@ content :
         }
 
         $.ajax({
-            url: "/api/tbpostlike",
+            url: "/api/tbpostlike/toggle",
             type: "POST",
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify({
@@ -358,7 +369,12 @@ content :
             }),
             cache: false,
             success: (data, status, xhr)=>{
-                //alert("success!!");
+                let liked = $(".btn-like").data("liked");
+                if (liked) {
+                    $(".btn-like").text("Like").data("liked", false);
+                } else {
+                    $(".btn-like").text("Unlike").data("liked", true);
+                }
                 alert(JSON.stringify(data));
             },
             error: (data, status, xhr)=>{
