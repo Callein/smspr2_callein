@@ -30,7 +30,7 @@ public class Tbpostlike extends AuditingFields {
         return new Tbpostlike(tbpostId, tbuserId);
     }
 
-    public TbpostlikeDto.CreateResDto toCreateResDto() {
-        return TbpostlikeDto.CreateResDto.builder().id(this.getId()).build();
+    public TbpostlikeDto.ToggleResDto toToggleResDto() {
+        return TbpostlikeDto.ToggleResDto.builder().tbpostId(this.getId()).build();
     }
 }
