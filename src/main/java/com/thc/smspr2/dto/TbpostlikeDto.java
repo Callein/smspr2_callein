@@ -16,7 +16,7 @@ public class TbpostlikeDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateReqDto{
+    public static class ToggleReqDto {
         @Schema(description = "tbuserId", example="")
         @NotNull
         @NotEmpty
@@ -38,8 +38,8 @@ public class TbpostlikeDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateResDto{
-        private String id;
+    public static class ToggleResDto {
+        private String tbpostId;
         private boolean liked;
     }
     @SuperBuilder
