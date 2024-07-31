@@ -1,55 +1,61 @@
 package com.thc.smspr2.service.impl;
 
-import com.thc.smspr2.domain.Tbpostlike;
 import com.thc.smspr2.dto.TbpostlikeDto;
-import com.thc.smspr2.repository.TbpostRepository;
 import com.thc.smspr2.repository.TbpostlikeRepository;
 import com.thc.smspr2.service.TbpostlikeService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TbpostlikeServiceImpl implements TbpostlikeService {
+    private final TbpostlikeRepository tbpostlikeRepository;
 
-    @Autowired
-    private TbpostRepository tbpostRepository;
-
-    @Autowired
-    private TbpostlikeRepository tbpostlikeRepository;
-
-    @Transactional
-    public TbpostlikeDto.CreateResDto likePost(TbpostlikeDto.CreateReqDto param){
-        return tbpostlikeRepository.save(param.toEntity()).toCreateResDto();
+    public TbpostlikeServiceImpl(TbpostlikeRepository tbpostlikeRepository) {
+        this.tbpostlikeRepository = tbpostlikeRepository;
     }
 
     @Transactional
-    public void unlikePost(TbpostlikeDto.DeleteReqDto param) {
-        Tbpostlike like = tbpostlikeRepository.findByTbpostIdAndTbuserId(param.getTbpostId(), param.getTbuserId());
-        if (like != null) {
-            tbpostlikeRepository.delete(like);
+    public TbpostlikeDto.ToggleResDto toggleLike(TbpostlikeDto.ToggleReqDto param) {
+        if (
+                isLiked(
+                    TbpostlikeDto.StatusReqDto.builder()
+                        .tbpostId(param.getTbpostId())
+                        .tbuserId(param.getTbuserId())
+                        .build()
+                ).getIsLiked()
+        ) {
+            return unlikePost(
+                    TbpostlikeDto.DeleteServDto.builder()
+                            .tbpostId(param.getTbpostId())
+                            .tbuserId(param.getTbuserId())
+                            .build()
+            );
         } else {
-            throw new RuntimeException("Like not found");
+            return likePost(param);
         }
     }
 
     @Override
-    public boolean isLiked(String postId, String userId) {
-        return tbpostlikeRepository.existsByTbpostIdAndTbuserId(postId, userId);
+    public TbpostlikeDto.StatusResDto isLiked(TbpostlikeDto.StatusReqDto param) {
+        return TbpostlikeDto.StatusResDto.builder()
+                .isLiked(tbpostlikeRepository.existsByTbpostIdAndTbuserId(param.getTbpostId(), param.getTbuserId()))
+                .build();
     }
 
     @Transactional
-    public TbpostlikeDto.CreateResDto toggleLike(TbpostlikeDto.CreateReqDto param) {
-        boolean isLiked = isLiked(param.getTbpostId(), param.getTbuserId());
-        if (isLiked) {
-            TbpostlikeDto.DeleteReqDto deleteReqDto = TbpostlikeDto.DeleteReqDto.builder()
-                    .tbpostId(param.getTbpostId())
-                    .tbuserId(param.getTbuserId())
-                    .build();
-            unlikePost(deleteReqDto);
-            return null;  // 좋아요 취소했을 때 반환값 처리
-        } else {
-            return likePost(param);
-        }
+    public TbpostlikeDto.ToggleResDto likePost(TbpostlikeDto.ToggleReqDto param){
+        TbpostlikeDto.ToggleResDto toggleResDto = tbpostlikeRepository.save(param.toEntity()).toToggleResDto();
+        toggleResDto.setLiked(true);
+        return toggleResDto;
+    }
+    @Transactional
+    public TbpostlikeDto.ToggleResDto unlikePost(TbpostlikeDto.DeleteServDto param) {
+        tbpostlikeRepository.delete(
+                tbpostlikeRepository.findByTbpostIdAndTbuserId(param.getTbpostId(), param.getTbuserId())
+        );
+        return TbpostlikeDto.ToggleResDto.builder()
+                .tbpostId(param.getTbpostId())
+                .liked(false)
+                .build();
     }
 }
