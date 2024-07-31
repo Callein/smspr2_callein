@@ -119,4 +119,16 @@ public class TbpostlikeDto {
         private String tbpostId;
         private String tbuserId;
     }
+
+    @Getter
+    @Builder
+    public static class StatusReqDto{
+        private String tbpostId;
+        private String tbuserId;
+    }
+    @Getter
+    @Builder
+    public static class StatusResDto{
+        private Boolean isLiked;
+    }
 }
