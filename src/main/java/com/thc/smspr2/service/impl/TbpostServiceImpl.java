@@ -85,11 +85,12 @@ public class TbpostServiceImpl implements TbpostService {
         selectResDto.setTbpostfiles(
                 tbpostfileService.list(TbpostfileDto.ListReqDto.builder().tbpostId(selectResDto.getId()).build())
         );
-        selectResDto.setLiked(tbpostlikeService.isLiked(
-                TbpostlikeDto.StatusReqDto.builder()
-                        .tbpostId(selectResDto.getId())
-                        .tbuserId(selectResDto.getTbuserId())
-                        .build()
+        selectResDto.setLiked(
+                tbpostlikeService.isLiked(
+                    TbpostlikeDto.StatusReqDto.builder()
+                            .tbpostId(selectResDto.getId())
+                            .tbuserId(selectResDto.getTbuserId())
+                            .build()
                 ).getIsLiked()
         );
 
