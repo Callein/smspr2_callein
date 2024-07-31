@@ -68,10 +68,6 @@ public class TbpostDto {
         @Schema(description = "content", example="")
         @Size(max=4000)
         private String content;
-        /*
-        @Schema(description = "countread", example="")
-        private Integer countread;
-        */
     }
 
     //여기는 빌더 붙이면 에러 나요!! 조심!!
@@ -97,10 +93,8 @@ public class TbpostDto {
         @Schema(description = "tbpostfiles", example="")
         private List<TbpostfileDto.DetailResDto> tbpostfiles;
 
-        @Schema(description = "countread", example="")
-        private Integer countread;
-        @Schema(description = "liked", example="")
-        private Boolean liked;
+        @Schema(description = "liked", example = "")
+        private boolean liked;
     }
 
     @SuperBuilder
