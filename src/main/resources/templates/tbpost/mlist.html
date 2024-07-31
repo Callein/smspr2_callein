@@ -22,7 +22,7 @@
         <input type="hidden" class="input_tbpost_title" value="{{title}}"/>
         </td>
         <td>
-            <button class="btn-like" data-postid="{{id}}" data-userid="{{tbuserId}}" data-liked="{{liked}}">
+            <button class="btn-like" data-postid="{{id}}" data-liked="{{liked}}" onclick="toggle_tbpostlike(this)">
                 {{#if liked}}Unlike{{else}}Like{{/if}}
             </button>
         </td>
@@ -151,32 +151,41 @@ title :
             }
         });
     }
-    $(document).on('click', '.btn-like', function() {
-        let postId = $(this).data('postid');
-        let userId = $(this).data('userid');
-        let liked = $(this).data('liked');
+
+    function toggle_tbpostlike(button){
+        let tbuserId = localStorage.getItem("myTbuserId");
+        if (tbuserId == null || tbuserId === "") {
+            alert("로그인 이전입니다!!");
+            return false;
+        }
+
+        let postId = $(button).data('postid');
+        let liked = $(button).data('liked');
 
         $.ajax({
             url: "/api/tbpostlike/toggle",
             type: "POST",
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({ tbpostId: postId, tbuserId: userId }),
-            success: function(response) {
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                tbpostId: postId,
+                tbuserId: tbuserId
+            }),
+            cache: false,
+            success: (data, status, xhr)=>{
                 if (liked) {
-                    alert("Unliked!");
-                    $(this).data('liked', false);
-                    $(this).text("Like");
+                    $(button).text("Like").data("liked", false);
                 } else {
-                    alert("Liked!");
-                    $(this).data('liked', true);
-                    $(this).text("Unlike");
+                    $(button).text("Unlike").data("liked", true);
                 }
-            }.bind(this),
-            error: function(xhr, status, error) {
-                alert("Error toggling like: " + xhr.responseText);
+                alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr)=>{
+                alert("error!!");
+                alert(JSON.stringify(data));
             }
         });
-    });
+    }
+
 
 </script>
 
