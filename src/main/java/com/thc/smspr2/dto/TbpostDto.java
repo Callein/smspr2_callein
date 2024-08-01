@@ -93,6 +93,8 @@ public class TbpostDto {
         @Schema(description = "tbpostfiles", example="")
         private List<TbpostfileDto.DetailResDto> tbpostfiles;
 
+        @Schema(description = "countread", example = "")
+        private Integer countread;
         @Schema(description = "liked", example = "")
         private boolean liked;
     }
@@ -136,4 +138,16 @@ public class TbpostDto {
         private String title;
     }
 
+    @Schema
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DetailListServDto{
+        @Schema(description = "list", example = "")
+        private List<TbpostDto.DetailResDto> list;
+        @Schema(description = "currentTbuserId", example = "")
+        private String currentTbuserId;
+    }
 }
