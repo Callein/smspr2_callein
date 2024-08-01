@@ -21,6 +21,7 @@
         <input type="hidden" class="input_tbpost_created_at" value="{{createdAt}}"/>
         <input type="hidden" class="input_tbpost_title" value="{{title}}"/>
         </td>
+        <td>{{countread}}</td>
         <td>
             <button class="btn-like" data-postid="{{id}}" data-liked="{{liked}}" onclick="toggle_tbpostlike(this)">
                 {{#if liked}}Unlike{{else}}Like{{/if}}
@@ -84,6 +85,7 @@ title :
                 <th>좋아요</th>
                 <th>조회수</th>
                 <th>일시</th>
+                <th>조회 수</th>
             </tr>
         </thead>
         <tbody id="tbody_tbpost_list">
@@ -133,9 +135,8 @@ title :
                 , orderway : orderway
                 , perpage : $("#search_tbpost_perpage").val()
                 , cursor : $("#search_tbpost_cursor").val()
-                , tbuserId : $("#detail_tbpost_tbuserId").val()
+                // , tbuserId : $("#detail_tbpost_tbuserId").val()
                 , title : $("#detail_tbpost_title").val()
-
                 ,tbuserId : localStorage.getItem("myTbuserId")
             },
             cache: false,
