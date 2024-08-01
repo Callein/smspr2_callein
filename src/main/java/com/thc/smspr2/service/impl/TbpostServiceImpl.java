@@ -79,20 +79,41 @@ public class TbpostServiceImpl implements TbpostService {
 
     @Override
     public TbpostDto.DetailResDto detail(DefaultDto.DetailReqDto param){
-        TbpostDto.DetailResDto selectResDto = tbpostMapper.detail(param);
-        if(selectResDto == null){ throw new RuntimeException("no data"); }
+
+        TbpostDto.DetailResDto selectResDto = get(param);
+        int countread = selectResDto.getCountread();
+        Tbpost tbpost = tbpostRepository.findById(selectResDto.getId()).orElseThrow(()->new RuntimeException("no data"));
+
+        // 조회수를 1 올림, 중복체크는 따로 하지 않았다.
+        tbpost.setCountread(++countread);
+        tbpostRepository.save(tbpost);
 
         selectResDto.setTbpostfiles(
                 tbpostfileService.list(TbpostfileDto.ListReqDto.builder().tbpostId(selectResDto.getId()).build())
         );
-        selectResDto.setLiked(
-                tbpostlikeService.isLiked(
-                    TbpostlikeDto.StatusReqDto.builder()
-                            .tbpostId(selectResDto.getId())
-                            .tbuserId(selectResDto.getTbuserId())
-                            .build()
-                ).getIsLiked()
+
+
+        return selectResDto;
+    }
+
+    public TbpostDto.DetailResDto get(DefaultDto.DetailReqDto param){
+        TbpostDto.DetailResDto selectResDto = tbpostMapper.detail(param);
+        if(selectResDto == null){ throw new RuntimeException("no data"); }
+        selectResDto.setTbpostfiles(
+                tbpostfileService.list(TbpostfileDto.ListReqDto.builder().tbpostId(selectResDto.getId()).build())
         );
+
+        // TbuserId 가 null 이 아닐 경우 좋아요 여부 설정.
+        if(param.getTbuserId() != null){
+            selectResDto.setLiked(
+                    tbpostlikeService.isLiked(
+                            TbpostlikeDto.StatusReqDto.builder()
+                                    .tbpostId(selectResDto.getId())
+                                    .tbuserId(selectResDto.getTbuserId())
+                                    .build()
+                    ).getIsLiked()
+            );
+        }
 
         /*
         //좋아요 했는지 안했는지 좀 확인해보자!
@@ -106,26 +127,54 @@ public class TbpostServiceImpl implements TbpostService {
 
     @Override
     public List<TbpostDto.DetailResDto> list(TbpostDto.ListReqDto param){
-        return detailList(tbpostMapper.list(param));
+        return  detailList(
+                TbpostDto.DetailListServDto.builder()
+                        .list(tbpostMapper.list(param))
+                        .build()
+        );
     }
+
     @Override
     public DefaultDto.PagedListResDto pagedList(TbpostDto.PagedListReqDto param){
         int[] returnSize = param.init(tbpostMapper.pagedListCount(param));
-        return param.afterBuild(returnSize, detailList(tbpostMapper.pagedList(param)));
+        return param.afterBuild(
+                returnSize,
+                detailList(
+                        TbpostDto.DetailListServDto.builder()
+                                .list(tbpostMapper.pagedList(param))
+                                .build()
+                )
+        );
     }
+
     @Override
     public List<TbpostDto.DetailResDto> scrollList(TbpostDto.ScrollListReqDto param){
         param.init();
-        return detailList(tbpostMapper.scrollList(param));
+        return detailList(
+                TbpostDto.DetailListServDto.builder()
+                        .list(tbpostMapper.scrollList(param))
+                        .currentTbuserId(param.getTbuserId())
+                        .build()
+        );
     }
-    //
-    public List<TbpostDto.DetailResDto> detailList(List<TbpostDto.DetailResDto> list){
+
+    public List<TbpostDto.DetailResDto> detailList(TbpostDto.DetailListServDto param){
         List<TbpostDto.DetailResDto> newList = new ArrayList<>();
-        for(TbpostDto.DetailResDto each : list){
-            //newList.add(get(DefaultDto.DetailReqDto.builder().id(each.getId()).tbuserId(tbuserId).build()));
-//            newList.add(get(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
-            newList.add(detail(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
-        }
+        String currentTbuserId = param.getCurrentTbuserId();
+        for(TbpostDto.DetailResDto each : param.getList()){
+            newList.add(
+                    get(
+                            DefaultDto.DetailReqDto.builder()
+                            .id(each.getId())
+                            .tbuserId(currentTbuserId)
+                            .build()
+                    )
+            );
+//        for(TbpostDto.DetailResDto each : list){
+//            //newList.add(get(DefaultDto.DetailReqDto.builder().id(each.getId()).tbuserId(tbuserId).build()));
+////            newList.add(get(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
+//            newList.add(detail(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
+//        }
         return newList;
     }
 }
