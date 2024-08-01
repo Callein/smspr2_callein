@@ -44,6 +44,8 @@ id :
 <input id="detail_tbpost_id" type="text" readonly/>
 title :
 <input id="detail_tbpost_title" type="text" />
+reads :
+<span id="detail_tbpost_countread"></span>
 tbuserId :
 <input id="detail_tbpost_tbuserId" type="text" />
 
@@ -66,8 +68,8 @@ content :
 
 </div>
 
+<div id="like_button_container"></div>
 좋아요 :
-
 <button class="btn-like" onclick="toggle_tbpostlike()">
     {{#if liked}}Unlike{{else}}Like{{/if}}
 </button>
@@ -265,6 +267,7 @@ content :
             contentType : 'application/json; charset=utf-8',
             data: {
                 id : getIdFromUrl(null)
+                ,tbuserId : localStorage.getItem("myTbuserId")
             },
             cache: false,
             success: (obj_data, status, xhr)=>{
@@ -275,6 +278,9 @@ content :
                     $("#detail_tbpost_" + eachKey).val(obj_data[eachKey]);
                     $(".font_tbpost_" + eachKey).text(obj_data[eachKey]);
                 }
+
+                // 조회수 업데이트
+                $("#detail_tbpost_countread").text(obj_data.countread);
 
                 let a_list = obj_data["tbpostfiles"];
                 $("#div_create_tbpost_imgs").append(list_info_tbpostfile_template({"resultData_tbpostfile":a_list}));
