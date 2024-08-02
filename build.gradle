@@ -48,6 +48,11 @@ dependencies {
     implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 
 
+    // 이메일 전송을 위함
+    // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+
+
     // 시큐리티 사용을 위함
     /*
     implementation 'org.springframework.boot:spring-boot-starter-security'
