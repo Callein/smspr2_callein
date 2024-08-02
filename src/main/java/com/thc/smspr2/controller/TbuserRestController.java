@@ -123,6 +123,39 @@ public class TbuserRestController {
 
     /**/
 
+    @Operation(summary = "사용자 이메일 인증확인",
+            description = "사용자 이메일 인증확인 컨트롤러 <br />"
+                    + "@param TbuserDto.UidReqDto <br />"
+                    + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbuserDto.CreateResDto\\> <br />"
+                    + "@exception 필수 파라미터 누락하였을 때 등 <br />"
+    )
+    @PostMapping("/confirm")
+    public ResponseEntity<TbuserDto.CreateResDto> confirm(@Valid @RequestBody TbuserDto.ConfirmReqDto param){
+        return ResponseEntity.status(HttpStatus.CREATED).body(tbuserService.confirm(param));
+    }
+    @Operation(summary = "사용자 이메일 인증요청",
+            description = "사용자 이메일 인증요청 컨트롤러 <br />"
+                    + "@param TbuserDto.UidReqDto <br />"
+                    + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbuserDto.CreateResDto\\> <br />"
+                    + "@exception 필수 파라미터 누락하였을 때 등 <br />"
+    )
+    @PostMapping("/email")
+    public ResponseEntity<TbuserDto.CreateResDto> email(@Valid @RequestBody TbuserDto.UidReqDto param){
+        return ResponseEntity.status(HttpStatus.CREATED).body(tbuserService.email(param));
+    }
+    @Operation(summary = "사용자 ID 중복체크",
+            description = "사용자 ID 중복체크 컨트롤러 <br />"
+                    + "@param TbuserDto.UidReqDto <br />"
+                    + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbuserDto.CreateResDto\\> <br />"
+                    + "@exception 필수 파라미터 누락하였을 때 등 <br />"
+    )
+    @PostMapping("/id")
+    public ResponseEntity<TbuserDto.CreateResDto> id(@Valid @RequestBody TbuserDto.UidReqDto param){
+        return ResponseEntity.status(HttpStatus.CREATED).body(tbuserService.id(param));
+    }
+
+    /**/
+
     @Operation(summary = "사용자 생성",
             description = "사용자 생성 컨트롤러 <br />"
                     + "@param TbuserDto.CreateReqDto <br />"
