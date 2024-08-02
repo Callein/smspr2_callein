@@ -20,6 +20,10 @@ public class Tbemail extends AuditingFields {
     @Setter @Column(nullable = false) private String due;
 
     protected Tbemail(){}
+    private Tbemail(String username, String number) {
+        this.username = username;
+        this.number = number;
+    }
     private Tbemail(String username, String number, String due) {
         this.username = username;
         this.number = number;
@@ -28,6 +32,7 @@ public class Tbemail extends AuditingFields {
     public static Tbemail of(String username, String number, String due) {
         return new Tbemail(username, number, due);
     }
+    public static Tbemail of(String username, String number) { return new Tbemail(username, number); }
 
     public TbemailDto.CreateResDto toCreateResDto() {
         return TbemailDto.CreateResDto.builder().id(this.getId()).build();

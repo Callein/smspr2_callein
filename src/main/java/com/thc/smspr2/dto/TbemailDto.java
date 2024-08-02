@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 public class TbemailDto {
 
@@ -26,12 +25,8 @@ public class TbemailDto {
         @NotNull
         @NotEmpty
         private String number;
-        //이거는 실제로 고객이 보내는 정보가 아닙니다!
-        @Schema(description = "due", example="")
-        private String due;
-
         public Tbemail toEntity(){
-            return Tbemail.of(username, number, due);
+            return Tbemail.of(username, number);
         }
     }
     @Builder
@@ -44,4 +39,13 @@ public class TbemailDto {
         private String id;
     }
 
+    @Builder
+    @Schema
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DueServDto{
+        private String due;
+    }
 }
