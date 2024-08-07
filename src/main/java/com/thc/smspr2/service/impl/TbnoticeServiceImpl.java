@@ -31,10 +31,6 @@ public class TbnoticeServiceImpl implements TbnoticeService {
     public TbnoticeDto.CreateResDto create(TbnoticeDto.CreateReqDto param){
         return tbnoticeRepository.save(param.toEntity()).toCreateResDto();
     }
-        TbnoticeDto.CreateResDto createResDto = tbnoticeRepository.save(param.toEntity()).toCreateResDto();
-
-        return createResDto;
-    }
 
     @Override
     public TbnoticeDto.CreateResDto update(TbnoticeDto.UpdateReqDto param){
