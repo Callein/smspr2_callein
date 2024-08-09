@@ -29,6 +29,8 @@ public class SendEmail {
         props.setProperty("mail.smtp.port", "587");
         props.setProperty("mail.smtp.auth", "true");
         props.setProperty("mail.smtp.starttls.enable", "true");
+        // 버젼을 맞춰주세요!!
+        props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
 
         // 보내는 사람 계정 정보 설정
         Session session = Session.getInstance(props, new Authenticator() {
@@ -43,6 +45,8 @@ public class SendEmail {
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         msg.setSubject(title);
         msg.setText(content);
+        //html 태그 쓰고 싶으시면 아래와 같이!!
+        /*msg.setContent(content, "text/html;charset=utf-8");*/
 
         // 메일 보내기
         Transport.send(msg);
