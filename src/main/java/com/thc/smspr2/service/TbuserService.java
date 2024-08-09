@@ -10,11 +10,11 @@ public interface TbuserService {
 
     TbuserDto.CreateResDto logout(DefaultDto.DetailReqDto param);
 
-    TbuserDto.CreateResDto access(TbuserDto.AccessReqDto param);
+//    TbuserDto.CreateResDto access(TbuserDto.AccessReqDto param);
     TbuserDto.CreateResDto confirm(TbuserDto.ConfirmReqDto param);
     TbuserDto.CreateResDto email(TbuserDto.UidReqDto param);
     TbuserDto.CreateResDto id(TbuserDto.UidReqDto param);
-    TbuserDto.CreateResDto login(TbuserDto.LoginReqDto param);
+//    TbuserDto.CreateResDto login(TbuserDto.LoginReqDto param);
     TbuserDto.CreateResDto signup(TbuserDto.SignupReqDto param);
     /**/
     TbuserDto.CreateResDto create(TbuserDto.CreateReqDto param);

@@ -1,23 +1,18 @@
 package com.thc.smspr2.service.impl;
 
-import com.thc.smspr2.domain.Tbemail;
-import com.thc.smspr2.domain.Tbrefreshtoken;
-import com.thc.smspr2.domain.Tbuser;
+import com.thc.smspr2.domain.*;
 import com.thc.smspr2.dto.DefaultDto;
 import com.thc.smspr2.dto.TbemailDto;
 import com.thc.smspr2.dto.TbrefreshtokenDto;
 import com.thc.smspr2.dto.TbuserDto;
 import com.thc.smspr2.mapper.TbuserMapper;
-import com.thc.smspr2.repository.TbemailRepository;
-import com.thc.smspr2.repository.TbrefreshtokenRepository;
-import com.thc.smspr2.repository.TbuserRepository;
+import com.thc.smspr2.repository.*;
 import com.thc.smspr2.service.TbuserService;
-import com.thc.smspr2.util.AES256Cipher;
 import com.thc.smspr2.util.NowDate;
 import com.thc.smspr2.util.SendEmail;
-import com.thc.smspr2.util.TokenFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,26 +28,32 @@ public class TbuserServiceImpl implements TbuserService {
     private final TbuserRepository tbuserRepository;
     private final TbuserMapper tbuserMapper;
     private final SendEmail sendEmail;
-    private final TokenFactory tokenFactory;
     private final TbemailRepository tbemailRepository;
     private final TbrefreshtokenRepository tbrefreshtokenRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RoleTypeRepository roleTypeRepository;
+    private final TbuserRoleTypeRepository tbuserRoleTypeRepository;
     public TbuserServiceImpl(
             TbuserRepository tbuserRepository
             , TbuserMapper tbuserMapper
             , SendEmail sendEmail
-            , TokenFactory tokenFactory
             , TbemailRepository tbemailRepository
             , TbrefreshtokenRepository tbrefreshtokenRepository
+            , BCryptPasswordEncoder bCryptPasswordEncoder
+            , RoleTypeRepository roleTypeRepository
+            , TbuserRoleTypeRepository tbuserRoleTypeRepository
     ) {
         this.tbuserRepository = tbuserRepository;
         this.tbuserMapper = tbuserMapper;
         this.sendEmail = sendEmail;
-        this.tokenFactory = tokenFactory;
         this.tbemailRepository = tbemailRepository;
         this.tbrefreshtokenRepository = tbrefreshtokenRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleTypeRepository = roleTypeRepository;
+        this.tbuserRoleTypeRepository = tbuserRoleTypeRepository;
     }
 
-
+/*
     public String encryptPw(String pw) {
         String newPw = "";
         try{
@@ -63,7 +64,7 @@ public class TbuserServiceImpl implements TbuserService {
             throw new RuntimeException("AES encrypt failed");
         }
         return newPw;
-    }
+    }*/
 
     @Override
     public TbuserDto.CreateResDto logout(DefaultDto.DetailReqDto param){
@@ -73,12 +74,12 @@ public class TbuserServiceImpl implements TbuserService {
         return TbuserDto.CreateResDto.builder().id("logout").build();
     }
 
-    @Override
-    public TbuserDto.CreateResDto access(TbuserDto.AccessReqDto param){
-        //엑세스 토큰 발급 합니다!
-        String accessToken = tokenFactory.accessToken(param.getRefreshToken());
-        return TbuserDto.CreateResDto.builder().id(accessToken).build();
-    }
+    /*    @Override
+        public TbuserDto.CreateResDto access(TbuserDto.AccessReqDto param){
+            //엑세스 토큰 발급 합니다!
+            String accessToken = tokenFactory.accessToken(param.getRefreshToken());
+            return TbuserDto.CreateResDto.builder().id(accessToken).build();
+        }*/
     @Override
     public TbuserDto.CreateResDto confirm(TbuserDto.ConfirmReqDto param){
         Tbemail tbemail = tbemailRepository.findByUsernameAndNumber(param.getUsername(), param.getNumber());
@@ -161,10 +162,14 @@ public class TbuserServiceImpl implements TbuserService {
             //이거는 중복 가입 뷸가능!
             return TbuserDto.CreateResDto.builder().id("already").build();
         }
-    }
+    }/*
     @Override
     public TbuserDto.CreateResDto login(TbuserDto.LoginReqDto param){
-        param.setPassword(encryptPw(param.getPassword()));
+        //param.setPassword(encryptPw(param.getPassword()));
+
+        //비번 암호화를 위한 코드
+        param.setPassword(bCryptPasswordEncoder.encode(param.getPassword()));
+
         Tbuser tbuser = tbuserRepository.findByUsernameAndPassword(param.getUsername(), param.getPassword());
         if(tbuser == null){ return TbuserDto.CreateResDto.builder().id("not matched").build(); }
 
@@ -180,7 +185,7 @@ public class TbuserServiceImpl implements TbuserService {
             tbrefreshtokenRepository.save(tbrefreshtoken);
         }
         return TbuserDto.CreateResDto.builder().id(token).build();
-    }
+    }*/
 
     @Override
     public TbuserDto.CreateResDto signup(TbuserDto.SignupReqDto param){
@@ -198,9 +203,19 @@ public class TbuserServiceImpl implements TbuserService {
 
     @Override
     public TbuserDto.CreateResDto create(TbuserDto.CreateReqDto param) {
-        param.setPassword(encryptPw(param.getPassword()));
+        //비번 암호화를 위한 코드
+        param.setPassword(bCryptPasswordEncoder.encode(param.getPassword()));
         logger.info("!!! : " + param.getPassword());
-        return tbuserRepository.save(param.toEntity()).toCreateResDto();
+
+        //사용자 등록 완료!
+        Tbuser tbuser = tbuserRepository.save(param.toEntity());
+
+        //권한은 그냥 ROLE_USER 로 강제 저장함!(임시코드)
+        RoleType roleType = roleTypeRepository.findByTypeName("ROLE_USER");
+        TbuserRoleType tbuserRoleType = TbuserRoleType.of(tbuser, roleType);
+        tbuserRoleTypeRepository.save(tbuserRoleType);
+        //
+        return tbuser.toCreateResDto();
     }
 
     @Override
