@@ -6,19 +6,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Table(
-        indexes = {
+@Table(indexes = {
         @Index(columnList = "deleted")
         ,@Index(columnList = "process")
         ,@Index(columnList = "createdAt")
         ,@Index(columnList = "modifiedAt")
-        },
-        uniqueConstraints = @UniqueConstraint(columnNames = {"tbpostId", "tbuserId"})
+}
+        ,uniqueConstraints = {
+        @UniqueConstraint(
+                name = "UQ_tbpostlike_tbpost_id_tbuser_id"
+                ,columnNames = {"tbpostId", "tbuserId"}
+        )}
 )
 @Entity
 public class Tbpostlike extends AuditingFields {
-    @Setter
-    @Column(nullable = false) private String tbpostId;
+
+    @Setter @Column(nullable = false) private String tbpostId;
     @Setter @Column(nullable = false) private String tbuserId;
 
     protected Tbpostlike(){}
@@ -30,7 +33,7 @@ public class Tbpostlike extends AuditingFields {
         return new Tbpostlike(tbpostId, tbuserId);
     }
 
-    public TbpostlikeDto.ToggleResDto toToggleResDto() {
-        return TbpostlikeDto.ToggleResDto.builder().tbpostId(this.getId()).build();
+    public TbpostlikeDto.CreateResDto toCreateResDto() {
+        return TbpostlikeDto.CreateResDto.builder().id(this.getId()).build();
     }
 }

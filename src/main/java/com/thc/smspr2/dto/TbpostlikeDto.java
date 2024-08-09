@@ -16,7 +16,7 @@ public class TbpostlikeDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ToggleReqDto {
+    public static class CreateReqDto{
         @Schema(description = "tbuserId", example="")
         @NotNull
         @NotEmpty
@@ -38,9 +38,8 @@ public class TbpostlikeDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ToggleResDto {
-        private String tbpostId;
-        private boolean liked;
+    public static class CreateResDto{
+        private String id;
     }
     @SuperBuilder
     @Schema
@@ -113,22 +112,4 @@ public class TbpostlikeDto {
         private String tbuserId;
     }
 
-    @Getter
-    @Builder
-    public static class DeleteServDto {
-        private String tbpostId;
-        private String tbuserId;
-    }
-
-    @Getter
-    @Builder
-    public static class StatusReqDto{
-        private String tbpostId;
-        private String tbuserId;
-    }
-    @Getter
-    @Builder
-    public static class StatusResDto{
-        private Boolean isLiked;
-    }
 }
