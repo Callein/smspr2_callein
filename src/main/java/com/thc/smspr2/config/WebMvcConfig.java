@@ -11,11 +11,11 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final TokenFactory tokenFactory;
-
-    public WebMvcConfig(TokenFactory tokenFactory) {
-        this.tokenFactory = tokenFactory;
-    }
+//    private final TokenFactory tokenFactory;
+//
+//    public WebMvcConfig(TokenFactory tokenFactory) {
+//        this.tokenFactory = tokenFactory;
+//    }
 
     //파일 접근하는 통로 열어두고 싶다면 사용하면 됨
     @Override
@@ -32,12 +32,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver());
     }
 
-    //인터셉터 설정을 위함
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new DefaultInterceptor())
-                .addPathPatterns("/api/**") //인터셉터가 실행되야 하는 url 패턴 설정
-                .excludePathPatterns("/resources/**"); //인터셉터가 실행되지 않아야 하는 url 패턴
-    }
+//    //인터셉터 설정을 위함
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new DefaultInterceptor())
+//                .addPathPatterns("/api/**") //인터셉터가 실행되야 하는 url 패턴 설정
+//                .excludePathPatterns("/resources/**"); //인터셉터가 실행되지 않아야 하는 url 패턴
+//    }
 
 }
