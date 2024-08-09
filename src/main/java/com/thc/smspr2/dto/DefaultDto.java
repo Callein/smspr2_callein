@@ -5,15 +5,31 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.beans.BeanUtils;
 
 public class DefaultDto {
-
     @Builder
     @Schema
     @Getter
     @Setter
     public static class FileResDto{
         private String url;
+    }
+
+    @SuperBuilder
+    @Schema
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class BaseDto {
+        String empty; // 이게 없으면 빌더가 잘 안되어요 ㅠㅠ
+        public BaseDto afterBuild(BaseDto param) {
+            //param => reqDto 를 넣어주면!!
+            BeanUtils.copyProperties(param, this);
+            //this 인 서비스 디티오를 돌려줍니다! 안에 있는 모든 필드값 카피도 해줍니다!
+            return this;
+        }
     }
 
     /**/
@@ -24,7 +40,7 @@ public class DefaultDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UpdateReqDto {
+    public static class UpdateReqDto extends BaseDto {
         @Schema(description = "id", example="")
         @NotNull
         @NotEmpty
@@ -42,7 +58,7 @@ public class DefaultDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DetailReqDto{
+    public static class DetailReqDto extends BaseDto {
         @Schema(description = "id", example="")
         @NotNull
         @NotEmpty
@@ -60,6 +76,8 @@ public class DefaultDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DetailServDto extends DetailReqDto{
+        @Schema(description = "isAdmin", example="")
+        private boolean isAdmin;
         @Schema(description = "reqTbuserId", example="")
         private String reqTbuserId;
     }
@@ -87,7 +105,7 @@ public class DefaultDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ListReqDto{
+    public static class ListReqDto extends BaseDto {
         @Schema(description = "deleted", example="")
         private String deleted;
         @Schema(description = "process", example="")
@@ -100,7 +118,7 @@ public class DefaultDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PagedListReqDto{
+    public static class PagedListReqDto extends BaseDto {
 
         @Schema(description = "callpage", example="")
         private Integer callpage;
@@ -195,7 +213,7 @@ public class DefaultDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ScrollListReqDto{
+    public static class ScrollListReqDto extends BaseDto {
 
         @Schema(description = "cursor", example="")
         private String cursor;
