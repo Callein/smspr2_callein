@@ -134,8 +134,9 @@ content :
             type: "POST",
             contentType: 'application/json; charset=utf-8',
             beforeSend: function (xhr) {
-                xhr.setRequestHeader("Content-type","application/json");
+                xhr.setRequestHeader("Content-type", "application/json");
                 xhr.setRequestHeader("Authorization", localStorage.getItem("accessToken"));
+                //xhr.setRequestHeader("RefreshToken", localStorage.getItem("refreshToken"));
             },
             data: JSON.stringify({
                 /*tbuserId: tbuserId*/

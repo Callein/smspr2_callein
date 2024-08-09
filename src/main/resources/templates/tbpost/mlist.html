@@ -21,12 +21,6 @@
         <input type="hidden" class="input_tbpost_created_at" value="{{createdAt}}"/>
         <input type="hidden" class="input_tbpost_title" value="{{title}}"/>
         </td>
-        <td>{{countread}}</td>
-        <td>
-            <button class="btn-like" data-postid="{{id}}" data-liked="{{liked}}" onclick="toggle_tbpostlike(this)">
-                {{#if liked}}Unlike{{else}}Like{{/if}}
-            </button>
-        </td>
     </tr>
     {{/resultData_tbpost}}
 </script>
@@ -85,7 +79,6 @@ title :
                 <th>좋아요</th>
                 <th>조회수</th>
                 <th>일시</th>
-                <th>조회 수</th>
             </tr>
         </thead>
         <tbody id="tbody_tbpost_list">
@@ -135,7 +128,9 @@ title :
                 , orderway : orderway
                 , perpage : $("#search_tbpost_perpage").val()
                 , cursor : $("#search_tbpost_cursor").val()
+                , tbuserId : $("#detail_tbpost_tbuserId").val()
                 , title : $("#detail_tbpost_title").val()
+
                 ,tbuserId : localStorage.getItem("myTbuserId")
             },
             cache: false,
@@ -151,42 +146,6 @@ title :
             }
         });
     }
-
-    function toggle_tbpostlike(button){
-        let tbuserId = localStorage.getItem("myTbuserId");
-        if (tbuserId == null || tbuserId === "") {
-            alert("로그인 이전입니다!!");
-            return false;
-        }
-
-        let postId = $(button).data('postid');
-        let liked = $(button).data('liked');
-
-        $.ajax({
-            url: "/api/tbpostlike/toggle",
-            type: "POST",
-            contentType : 'application/json; charset=utf-8',
-            data: JSON.stringify({
-                tbpostId: postId,
-                tbuserId: tbuserId
-            }),
-            cache: false,
-            success: (data, status, xhr)=>{
-                if (liked) {
-                    $(button).text("Like").data("liked", false);
-                } else {
-                    $(button).text("Unlike").data("liked", true);
-                }
-                alert(JSON.stringify(data));
-            },
-            error: (data, status, xhr)=>{
-                alert("error!!");
-                alert(JSON.stringify(data));
-            }
-        });
-    }
-
-
 </script>
 
 </body>

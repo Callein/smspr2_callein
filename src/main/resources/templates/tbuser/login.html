@@ -13,6 +13,7 @@ password :
 <input type="text" id="create_tbuser_password" />
 
 <button onclick="login()">login</button>
+<button onclick="generateAccessToken()">accessToken</button>
 <!--<div>
 refreshToken :
 <input type="text" id="detail_tbuser_refreshToken" />
@@ -27,7 +28,8 @@ accessToken :
 <script>
     function login(){
         $.ajax({
-            url: "/api/tbuser/login",
+            //url: "/api/tbuser/login",
+            url: "/api/login",
             type: "POST",
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify({
@@ -39,9 +41,16 @@ accessToken :
                 if(obj_data["id"] === "not matched"){
                     alert("아이디와 비밀번호가 올바르지 않습니다.");
                 } else {
-                    //alert(JSON.stringify(obj_data));
-                    localStorage.setItem("refreshToken", obj_data["id"]);
-                    generateAccessToken(obj_data["id"]);
+                    alert(JSON.stringify(obj_data));
+
+                    let refreshToken = xhr.getResponseHeader("RefreshToken");
+                    let accessToken = xhr.getResponseHeader("Authorization");
+                    alert(refreshToken);
+                    alert(accessToken);
+
+                    localStorage.setItem("refreshToken", refreshToken);
+                    localStorage.setItem("accessToken", accessToken);
+                    //generateAccessToken(obj_data["id"]);
                     //location.replace("/index");
                 }
                 //alert(JSON.stringify(data));
@@ -52,23 +61,29 @@ accessToken :
             }
         });
     }
-    function generateAccessToken(refreshToken){
+    function generateAccessToken(){
         $.ajax({
-            url: "/api/tbuser/access",
+            url: "/api/auth/access-token",
             type: "POST",
-            contentType : 'application/json; charset=utf-8',
-            data: JSON.stringify({
-                refreshToken : refreshToken
-            }),
-            cache: false,
-            success: (obj_data, status, xhr)=>{
-                //alert(JSON.stringify(obj_data));
-                localStorage.setItem("accessToken", obj_data["id"]);
-                location.replace("/index");
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader("RefreshToken", localStorage.getItem("refreshToken"));
             },
-            error: (obj_data, status, xhr)=>{
+            data: {},
+            cache: false,
+            success: (data, status, xhr) => {
+                alert("success!!");
+
+                let accessToken = xhr.getResponseHeader("Authorization");
+                alert(accessToken);
+
+                localStorage.setItem("accessToken", accessToken);
+                //alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr) => {
                 alert("error!!");
-                alert(JSON.stringify(obj_data));
+                alert(JSON.stringify(data));
             }
         });
     }

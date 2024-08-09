@@ -44,12 +44,10 @@ id :
 <input id="detail_tbpost_id" type="text" readonly/>
 title :
 <input id="detail_tbpost_title" type="text" />
-reads :
-<span id="detail_tbpost_countread"></span>
 tbuserId :
 <input id="detail_tbpost_tbuserId" type="text" />
 
-tbuserNick : <font id="font_tbpost_tbuserNick"></font>
+tbuserNick : <font class="font_tbpost_tbuserNick"></font>
 content :
 <input id="detail_tbpost_content" type="text" />
 
@@ -68,15 +66,14 @@ content :
 
 </div>
 
-<div id="like_button_container"></div>
-좋아요 :
-<button class="btn-like" onclick="toggle_tbpostlike()">
-    {{#if liked}}Unlike{{else}}Like{{/if}}
-</button>
+좋아요 <font class="font_tbpost_liked">-</font>:
+<input type="checkbox" id="detail_tbpost_liked" onchange="toggle_tbpostlike()"/>
+
+<!--<button onclick="toggle_tbpostlike()">like</button>-->
 
 댓글 :
 <input id="create_tbpostcmt_content" type="text" />
-<button onclick="toggle_tbpostcmt()">create</button>
+<button onclick="create_tbpostcmt()">create</button>
 
 <div id="div_create_tbpost_imgs">
 
@@ -271,27 +268,27 @@ content :
             },
             cache: false,
             success: (obj_data, status, xhr)=>{
-                //alert("success!!");
+                //alert(obj_data["liked"]);
                 //alert(JSON.stringify(obj_data));
+
+                /*<input type="text" id="detail_tbpost_title" />*/
+
                 let detailKeys = Object.keys(obj_data);
                 for (let eachKey of detailKeys){
-                    $("#detail_tbpost_" + eachKey).val(obj_data[eachKey]);
+                    let tempType = $("#detail_tbpost_" + eachKey).attr("type");
+                    if(tempType === "checkbox"){
+                        $("#detail_tbpost_" + eachKey).prop("checked", obj_data[eachKey]);
+                    } else {
+                        $("#detail_tbpost_" + eachKey).val(obj_data[eachKey]);
+                    }
+
                     $(".font_tbpost_" + eachKey).text(obj_data[eachKey]);
                 }
-
-                // 조회수 업데이트
-                $("#detail_tbpost_countread").text(obj_data.countread);
 
                 let a_list = obj_data["tbpostfiles"];
                 $("#div_create_tbpost_imgs").append(list_info_tbpostfile_template({"resultData_tbpostfile":a_list}));
 
                 mlist_tbpostcmt();
-
-                if (obj_data.liked) {
-                    $(".btn-like").text("Unlike").data("liked", true);
-                } else {
-                    $(".btn-like").text("Like").data("liked", false);
-                }
 /*
                 let download_file = data["content"];
                 download_file = download_file.replace("/uploadfile/", "");
@@ -309,6 +306,10 @@ content :
         $.ajax({
             url: "/api/tbpost",
             type: "PUT",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader("Authorization", localStorage.getItem("accessToken"));
+            },
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify({
                 id : $("#detail_tbpost_id").val()
@@ -356,7 +357,6 @@ content :
             }
         });
     }
-
     function toggle_tbpostlike(){
 
         let tbuserId = localStorage.getItem("myTbuserId");
@@ -375,13 +375,19 @@ content :
             }),
             cache: false,
             success: (data, status, xhr)=>{
-                let liked = $(".btn-like").data("liked");
-                if (liked) {
-                    $(".btn-like").text("Like").data("liked", false);
+                //alert("success!!");
+                //alert(JSON.stringify(data));
+
+                //$("#detail_tbpost_liked").prop("checked", !(data["id"] === "success"));
+                if(data["id"] === "success"){
+                    //alert("좋아요 취소!");
+                    $(".font_tbpost_liked").text(false);
+                    $("#detail_tbpost_liked").prop("checked", false);
+
                 } else {
-                    $(".btn-like").text("Unlike").data("liked", true);
+                    $(".font_tbpost_liked").text(true);
+                    $("#detail_tbpost_liked").prop("checked", true);
                 }
-                alert(JSON.stringify(data));
             },
             error: (data, status, xhr)=>{
                 alert("error!!");
