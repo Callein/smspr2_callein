@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+
+// Security 사용으로 더이상 사용되지 않음.
 @Component
 public class TokenFactory {
 
